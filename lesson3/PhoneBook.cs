@@ -1,9 +1,14 @@
 ﻿using System;
 
 namespace lesson3
-{
+{   
     public static class PhoneBook
     {
+        public delegate void OutputToConsole(string Message);
+        public static event OutputToConsole? AddUserConsoleInfo;
+        public static event OutputToConsole? DeleteUserConsoleInfo;
+        public static event OutputToConsole? GetUsersFromFileConsoleInfo;
+        public static event OutputToConsole? SaveUsersToFileConsoleInfo;
         static string Path = "../../../phonebook.txt";
         public static List<Abonent> PhoneList = new();
         public static void Init()
@@ -18,6 +23,7 @@ namespace lesson3
                 }
                 else
                 {
+                    GetUsersFromFileConsoleInfo?.Invoke("Пользователи взяты из файла.");
                     break;
                 }
             }
@@ -38,15 +44,11 @@ namespace lesson3
         }
         public static void AddAbonent(string Name, string PhoneNumber)
         {
-            if (PhoneList.Find(Elem => Elem.Name.Contains(Name)) is null &&
-                PhoneList.Find(Elem => Elem.PhoneNumber.Contains(PhoneNumber)) is null)
+            if (PhoneList.Find(Elem => Elem.Name == Name) is null &&
+                PhoneList.Find(Elem => Elem.PhoneNumber == PhoneNumber) is null)
             {
                 PhoneList.Add(new Abonent(Name.ToLower(), PhoneNumber));
-                Console.WriteLine("Пользователь добавлен.");
-            }
-            else
-            {
-                Console.WriteLine("Такой пользователь уже существует!");
+                AddUserConsoleInfo?.Invoke("Пользователь добавлен.");
             }
         }
         public static void DeleteAbonentUsingName(string Name)
@@ -57,6 +59,8 @@ namespace lesson3
                 if (PhoneList[IndexAbonet].Name == Name)
                 {
                     PhoneList.RemoveAt(IndexAbonet);
+                    DeleteUserConsoleInfo?.Invoke("Пользователь удалён.");
+                    break;
                 }
                 IndexAbonet++;
             }
@@ -69,6 +73,8 @@ namespace lesson3
                 if (PhoneList[IndexAbonet].PhoneNumber == PhoneNumber)
                 {
                     PhoneList.RemoveAt(IndexAbonet);
+                    DeleteUserConsoleInfo?.Invoke("Пользователь удалён.");
+                    break;
                 }
                 IndexAbonet++;
             }
@@ -91,6 +97,7 @@ namespace lesson3
                 Index++;
             }
             File.WriteAllLines(Path, Text);
+            SaveUsersToFileConsoleInfo?.Invoke("Пользователи сохранены.");
         }
     }
 }

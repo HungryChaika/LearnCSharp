@@ -6,6 +6,7 @@ namespace lesson3
     {
         public static void Main(string[] args)
         {
+            InitEvents();
             PhoneBook.Init();
             Console.WriteLine("Телефонная книга.");
             Console.WriteLine("\nОпции:\n");
@@ -15,8 +16,8 @@ namespace lesson3
                 "2) Получить пользователя по имени;\n" +
                 "3) Показать список пользователей;\n" +
                 "4) Добавить пользователя;\n" +
-                "5) Удалять пользователя по номеру телефона;\n" +
-                "6) Удалять пользователя по имени;\n"
+                "5) Удалить пользователя по номеру телефона;\n" +
+                "6) Удалить пользователя по имени;\n"
                 );
             ConsoleKeyInfo Mode;
             do
@@ -91,9 +92,27 @@ namespace lesson3
                 }
             }
             while (Mode.Key != ConsoleKey.D0);
-
-
-
         }
+
+        static void InitEvents()
+        {
+            PhoneBook.AddUserConsoleInfo += MessageAddUser;
+            PhoneBook.DeleteUserConsoleInfo += MessageDeleteUser;
+            PhoneBook.GetUsersFromFileConsoleInfo += MessageStartWorkOrEndWork;
+            PhoneBook.SaveUsersToFileConsoleInfo += MessageStartWorkOrEndWork;
+        }
+        static void MessageAddUser(string Message)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(Message);
+            Console.ResetColor();
+        }
+        static void MessageDeleteUser(string Message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(Message);
+            Console.ResetColor();
+        }
+        static void MessageStartWorkOrEndWork(string Message) => Console.WriteLine(Message);
     }
 }
